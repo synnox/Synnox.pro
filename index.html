@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Synnox — Profil &amp; Links</title>
+<meta name="description" content="Profil de Synnox : liens vers ses serveurs Discord, chaînes YouTube, TikTok et GitHub, avec activité Discord en direct et une musique lofi de fond.">
+<meta name="author" content="synnox">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#080812">
+<link rel="icon" href="./assets/img/avatar.png" type="image/png">
+<link rel="canonical" href="https://synnox.github.io/sn/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Synnox — Profil &amp; Links">
+<meta property="og:description" content="Serveurs Discord, YouTube, TikTok, GitHub et activité Discord en direct.">
+<meta property="og:image" content="https://synnox.github.io/sn/assets/img/avatar.png">
+<meta property="og:url" content="https://synnox.github.io/sn/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Synnox — Profil &amp; Links">
+<meta name="twitter:description" content="Serveurs Discord, YouTube, TikTok, GitHub et activité Discord en direct.">
+
+<link rel="preconnect" href="https://cdn.discordapp.com" crossorigin>
+<link rel="preconnect" href="https://api.lanyard.rest" crossorigin>
+<link rel="dns-prefetch" href="https://media.discordapp.net">
+
+<link rel="stylesheet" href="./assets/css/all.min.css">
+<link href="./assets/css/css2.css" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/style.css">
+
+</head>
+<body>
+
+<!-- LEGAL MODALS -->
+<div id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalTitle" hidden>
+  <div class="modal-box">
+    <button class="modal-close" id="legalClose" type="button" aria-label="Fermer">×</button>
+    <h2 id="legalTitle"></h2>
+    <div id="legalContent" style="text-align:left;color:var(--muted);font-size:12px;line-height:1.6;max-height:300px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- MODE SELECTION MODAL -->
+<div id="modeModal" role="dialog" aria-modal="true" aria-labelledby="modeTitle" aria-describedby="modeDesc">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+    <h2 id="modeTitle">Bienvenue</h2>
+    <p id="modeDesc">Choisissez votre mode de visite</p>
+    <div class="modal-choices">
+
+      <button class="modal-btn b-damso" id="chooseCommunaute" type="button">
+        <div class="btn-ico"><i class="fas fa-users" aria-hidden="true"></i></div>
+        <div class="btn-lbl">
+          <div class="btn-title">Communauté</div>
+          <div class="btn-sub">Mode complet avec réseaux sociaux</div>
+        </div>
+        <i class="fas fa-chevron-right btn-chevron" aria-hidden="true"></i>
+      </button>
+
+      <button class="modal-btn b-bg" id="chooseEntreprise" type="button">
+        <div class="btn-ico"><i class="fas fa-briefcase" aria-hidden="true"></i></div>
+        <div class="btn-lbl">
+          <div class="btn-title">Entreprise</div>
+          <div class="btn-sub">Mode professionnel épuré</div>
+        </div>
+        <i class="fas fa-chevron-right btn-chevron" aria-hidden="true"></i>
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- LOFI PLAYER -->
+<div class="lofi-widget" id="lofiWidget" role="region" aria-label="Lecteur lofi">
+  <button class="lofi-play" id="lofiPlayBtn" type="button" aria-label="Lire ou mettre en pause le lofi"><i class="fas fa-play" id="lofiIcon" aria-hidden="true"></i></button>
+  <div class="lofi-info">
+    <div class="lofi-title">No Title</div>
+    <div class="lofi-artist">Musique de fond</div>
+  </div>
+  <div class="lofi-vol" id="lofiVol">
+    <i class="fas fa-volume-low" aria-hidden="true"></i>
+    <input type="range" id="lofiVolume" min="0" max="100" value="30" aria-label="Volume du lofi">
+    <i class="fas fa-volume-high" aria-hidden="true"></i>
+  </div>
+</div>
+
+<audio id="lofiAudio" loop preload="auto"></audio>
+
+<!-- MODE SWITCHER (top-left) -->
+<button class="mode-switch-btn" id="modeSwitchBtn" type="button" aria-label="Changer de mode">
+  <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+  <span id="modeSwitchText">Changer de mode</span>
+</button>
+
+<!-- CARD -->
+<main class="container" id="card">
+
+  <section class="profile fade">
+    <div class="avatar-wrap">
+      <div class="avatar-ring" aria-hidden="true"><div class="avatar-ring-inner"></div></div>
+      <img class="avatar" id="avatar" src="" alt="Avatar de Synnox" decoding="async">
+      <div class="status-dot offline" id="statusDot" aria-label="Statut Discord : hors ligne"></div>
+    </div>
+    <div class="username" id="username">Synnox</div>
+    <div class="tag" id="discriminator"></div>
+    <p class="bio" id="bio">Chargement du profil…</p>
+    <div class="badges">
+      <span class="badge"><i class="fab fa-discord" style="color:#7983f5;font-size:9px" aria-hidden="true"></i> Discord</span>
+      <span class="badge"><i class="fas fa-code" style="color:#aaa;font-size:9px" aria-hidden="true"></i> Dev</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="activity fade" id="activity" aria-label="Activité Discord">
+    <div class="act-header"><i class="fab fa-discord" aria-hidden="true"></i><span>Activité Discord</span></div>
+    <div id="activityContent" aria-live="polite">
+      <div class="skel"><div class="skel-icon skel-pulse"></div><div class="skel-text skel-pulse"></div></div>
+    </div>
+  </section>
+
+  <div class="tabs" id="tabs" role="tablist" aria-label="Catégories">
+    <button class="tab active" id="tab-reseaux" role="tab" aria-selected="true" aria-controls="panel-reseaux" data-tab="reseaux" type="button">Réseaux</button>
+    <button class="tab" id="tab-dev" role="tab" aria-selected="false" aria-controls="panel-dev" data-tab="dev" type="button" tabindex="-1">Dev</button>
+    <button class="tab" id="tab-pl" role="tab" aria-selected="false" aria-controls="panel-pl" data-tab="pl" type="button" tabindex="-1">Powerlifting</button>
+  </div>
+
+  <div class="panels" id="panels">
+    <section class="panel active" id="panel-reseaux" role="tabpanel" aria-labelledby="tab-reseaux" tabindex="0">
+      <nav class="links fade" id="linksContainer" aria-label="Liens sociaux"></nav>
+
+      <div class="guide fade" id="guideBox" style="display:none">
+        <div id="guideContent"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-dev" role="tabpanel" aria-labelledby="tab-dev" tabindex="0">
+      <p class="dev-bio">Je conçois et développe des <strong>sites web</strong>, des <strong>applications Python</strong> et des <strong>applications C++</strong>.</p>
+      <div class="dev-repos" id="devRepos"></div>
+      <a class="link" href="https://github.com/synnox" target="_blank" rel="noopener noreferrer" aria-label="GitHub — @synnox, mes projets">
+        <div class="link-icon i-github"><i class="fab fa-github" aria-hidden="true"></i></div>
+        <div class="link-info"><div class="link-title">GitHub</div><div class="link-sub">@synnox — mes projets</div></div>
+        <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+      </a>
+    </section>
+
+    <section class="panel" id="panel-pl" role="tabpanel" aria-labelledby="tab-pl" tabindex="0">
+      <div class="pl-content">
+      <div class="pl-head">
+        <div class="pl-ico"><i class="fas fa-dumbbell" aria-hidden="true"></i></div>
+        <div>
+          <div class="pl-name">Powerlifting</div>
+          <div class="pl-tag">16 ans · Catégorie Sub-Junior</div>
+        </div>
+      </div>
+
+      <div class="pl-stats">
+        <div class="pl-stat">
+          <div class="pl-stat-val">503<span>kg</span></div>
+          <div class="pl-stat-label">Total</div>
+        </div>
+        <div class="pl-stat">
+          <div class="pl-stat-val">&lt;2000<span>e</span></div>
+          <div class="pl-stat-label">Rang mondial</div>
+        </div>
+        <div class="pl-stat">
+          <div class="pl-stat-val">16<span>ans</span></div>
+          <div class="pl-stat-label">Âge</div>
+        </div>
+      </div>
+
+      <a class="link" href="https://discord.gg/344pkQeu2q" target="_blank" rel="noopener noreferrer" aria-label="Rejoindre le Discord Sn Hub">
+        <div class="link-icon i-discord"><i class="fab fa-discord" aria-hidden="true"></i></div>
+        <div class="link-info"><div class="link-title">Conseils &amp; accompagnement</div><div class="link-sub">Rejoins mon Discord — Sn Hub</div></div>
+        <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+      </a>
+
+      <p class="pl-note">Je partage mes entraînements, donne des conseils et réponds à vos questions sur le powerlifting dans Sn Hub.</p>
+    </div>
+    </section>
+  </div>
+
+  <!-- CONTENU ENTREPRISE (visible uniquement en mode entreprise) -->
+  <div class="entreprise-content" id="entrepriseContent">
+    <div class="entreprise-tabs" role="tablist" aria-label="Catégories entreprise">
+      <button class="entreprise-tab active" id="ent-tab-projets" role="tab" aria-selected="true" aria-controls="ent-panel-projets" data-tab="projets" type="button">Projets</button>
+      <button class="entreprise-tab" id="ent-tab-partenariat" role="tab" aria-selected="false" aria-controls="ent-panel-partenariat" data-tab="partenariat" type="button" tabindex="-1">Partenariat</button>
+      <button class="entreprise-tab" id="ent-tab-contact" role="tab" aria-selected="false" aria-controls="ent-panel-contact" data-tab="contact" type="button" tabindex="-1">Contact</button>
+    </div>
+
+    <div class="entreprise-panels">
+      <section class="entreprise-panel active" id="ent-panel-projets" role="tabpanel" aria-labelledby="ent-tab-projets" tabindex="0">
+        <div class="entreprise-section">
+          <div class="entreprise-title">À propos</div>
+          <div class="entreprise-desc">Développeur full-stack spécialisé en Python, C++ et web moderne. Powerlifter N1 qualifié pour les championnats de France sub-junior.</div>
+        </div>
+
+        <div class="entreprise-section">
+          <div class="entreprise-title">Projets Principaux</div>
+          <div class="links">
+            <a class="link" href="https://github.com/synnox/web-template" target="_blank" rel="noopener noreferrer" aria-label="Web Template">
+              <div class="link-icon i-github"><i class="fab fa-github" aria-hidden="true"></i></div>
+              <div class="link-info"><div class="link-title">Web Template</div><div class="link-sub">Template de site web moderne</div></div>
+              <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+            </a>
+            <a class="link" href="https://github.com/synnox/Sn-Hub" target="_blank" rel="noopener noreferrer" aria-label="Sn Hub">
+              <div class="link-icon i-github"><i class="fab fa-github" aria-hidden="true"></i></div>
+              <div class="link-info"><div class="link-title">Sn Hub</div><div class="link-sub">Plateforme communautaire</div></div>
+              <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="entreprise-panel" id="ent-panel-partenariat" role="tabpanel" aria-labelledby="ent-tab-partenariat" tabindex="0">
+        <div class="entreprise-section">
+          <div class="entreprise-title">Partenariat</div>
+          <div class="entreprise-desc">Vous souhaitez collaborer ? Je suis ouvert aux partenariats professionnels. N'hésitez pas à me contacter pour discuter de vos projets.</div>
+          <div class="links" style="margin-top:12px">
+            <a class="link" href="https://mail.google.com/mail/?view=cm&fs=1&to=synnox.pro@gmail.com&su=Partenariat&body=Bonjour,%0A%0AJe souhaite vous proposer un partenariat.%0A%0ACordialement," target="_blank" rel="noopener noreferrer" aria-label="Gmail pour partenariat">
+              <div class="link-icon" style="background:rgba(234,67,53,.16);color:#ea4335"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+              <div class="link-info"><div class="link-title">Via Gmail</div><div class="link-sub">Ouvrir Gmail directement</div></div>
+              <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="entreprise-panel" id="ent-panel-contact" role="tabpanel" aria-labelledby="ent-tab-contact" tabindex="0">
+        <div class="entreprise-section">
+          <div class="entreprise-title">Contact</div>
+          <div class="entreprise-desc">Une idée de projet, une collab ou juste envie de discuter ? Contactez-moi — réponse rapide.</div>
+          <div class="links">
+            <a class="link" href="https://mail.google.com/mail/?view=cm&fs=1&to=synnox.pro@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Gmail">
+              <div class="link-icon" style="background:rgba(234,67,53,.16);color:#ea4335"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+              <div class="link-info"><div class="link-title">Via Gmail</div><div class="link-sub">Ouvrir Gmail directement</div></div>
+              <div class="link-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+            </a>
+          </div>
+          <form class="guide" style="display:block;background:var(--surface2);border-radius:12px" id="entrepriseContactForm" action="https://formsubmit.co/synnox.pro@gmail.com" method="POST" onsubmit="event.preventDefault(); sendContactForm();">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <input type="hidden" name="_subject" value="Nouveau message du site">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <input id="entCName" type="text" name="name" placeholder="Votre nom" required style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:inherit;font-size:13px">
+              <input id="entCSubject" type="text" name="subject" placeholder="Sujet" required style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:inherit;font-size:13px">
+              <textarea id="entCMsg" name="message" placeholder="Votre message…" required rows="4" style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:inherit;font-size:13px;resize:vertical"></textarea>
+              <button type="submit" style="padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-family:inherit;cursor:pointer">Envoyer</button>
+              <div id="entContactStatus" style="display:none;font-size:11px;color:var(--muted);text-align:center"></div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+  <footer class="footer fade">
+    <a href="https://github.com/synnox" target="_blank" rel="noopener noreferrer">synnox</a> ·
+    <a href="#" onclick="showLegalModal('privacy');return false;">Confidentialité</a> ·
+    <a href="#" onclick="showLegalModal('terms');return false;">Conditions</a> ·
+    <a href="#" onclick="showLegalModal('cookies');return false;">Cookies</a>
+  </footer>
+</main>
+
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>
